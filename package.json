@@ -1,5 +1,5 @@
 {
-  "name": "todoapp",
+  "name": "relationship-neo4j-nextjs-flask",
   "version": "0.1.0",
   "private": true,
   "scripts": {
