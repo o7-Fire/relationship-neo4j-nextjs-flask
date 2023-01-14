@@ -199,7 +199,7 @@ export default function Create() {
                             </MenuItem>
                             {peoplesFiltered && peoplesFiltered.map((person) => {
                                 return (
-                                    <MenuItem value={person.node_id}>{person.name}</MenuItem>
+                                    <MenuItem value={person.node_id} key={person.node_id}>{person.name}</MenuItem>
                                 )
                             })}
                         </Select>
