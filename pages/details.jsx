@@ -1,4 +1,3 @@
-
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -7,23 +6,28 @@ import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import Link from 'next/link'
 
-import { styled } from '@mui/material/styles';
-
-import { Inter } from '@next/font/google'
-import { useState, useEffect } from 'react'
-import Router from 'next/router'
-import { useRouter } from 'next/router'
+import {Inter} from '@next/font/google'
+import {useEffect, useState} from 'react'
+import {useRouter} from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export async function getStaticProps(context) {
+    return {
+        props: {
+            API_URL: process.env.API_HOST ? process.env.API_HOST : '/api/'
+        }
+    }
+}
 
-export default function Create() {
+export default function Create({API_URL}) {
     const router = useRouter();
 
     console.log(router.query);
+
 
     const [query, setQuery] = useState(router.query)
     const [persons, setPersons] = useState(null)
@@ -41,7 +45,7 @@ export default function Create() {
 
         if (edit) {
             setLoading(true)
-            fetch(`/api/relationships/${queryId}`)
+            fetch(API_URL + `relationships/${queryId}`)
                 .then((res) => res.json())
                 .then((data) => {
                     console.log(data)
@@ -49,7 +53,7 @@ export default function Create() {
                     setLoading(false)
                 });
 
-            fetch(`/api/persons`)
+            fetch(API_URL + `persons`)
                 .then((res) => res.json())
                 .then((data) => {
 
@@ -84,7 +88,7 @@ export default function Create() {
         const name = query.name
         const age = query.age
 
-        fetch(`/api/persons` + (edit ? `/${queryId}` : ''), {
+        fetch(API_URL + `persons` + (edit ? `/${queryId}` : ''), {
             method: edit ? 'PUT' : 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -160,7 +164,7 @@ export default function Create() {
                         <p>{relationship.type}</p>
                         <Button onClick={() => {
                             if (relationship.relationship_id !== undefined){
-                                fetch(`/api/relationships/${relationship.relationship_id}`, {
+                                fetch(API_URL + `relationships/${relationship.relationship_id}`, {
                                     method: 'DELETE',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -214,7 +218,7 @@ export default function Create() {
                         if (!start_node_id || !end_node_id || !relationship_type) {
                             return;
                         }
-                        fetch(`/api/relationships`, {
+                        fetch(API_URL + `relationships`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -240,4 +244,4 @@ export default function Create() {
 
         </main>
     )
-}   
+}

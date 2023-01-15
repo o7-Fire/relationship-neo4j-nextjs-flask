@@ -1,8 +1,14 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, send_from_directory
+from flask_cors import CORS, cross_origin
+
 from neo4j import GraphDatabase
 import re
+
 import time
+import os
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Connect to the Neo4J server
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "password"))
