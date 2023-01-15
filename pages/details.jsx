@@ -76,9 +76,7 @@ export default function Create({API_URL}) {
             //default
             setQuery({
                 name: 'Nexity',
-                additional_data: {
-                    age: 0,
-                }
+                age: 0
             })
         }
     }, [API_URL, edit, queryId, router.isReady])
@@ -89,7 +87,7 @@ export default function Create({API_URL}) {
     function send() {
         console.log("Send")
         const name = query.name
-        const age = query.additional_data.age
+        const age = query.age
 
         fetch(API_URL + `persons` + (edit ? `/${queryId}` : ''), {
             method: edit ? 'PUT' : 'POST',
@@ -154,8 +152,8 @@ export default function Create({API_URL}) {
                     }
                 })} required />
                 <TextField id="age" label="Age" variant="outlined" defaultValue="18" type="number" {...({
-                    value: (query.additional_data || {}).age, onChange: (e) => {
-                        setQuery({...query, additional_data: {...query.additional_data, age: e.target.value}})
+                    value: query.age, onChange: (e) => {
+                        setQuery({...query, age: e.target.value})
                     }
                 })} required />
 

@@ -47,6 +47,8 @@ def create_node():
         result = session.run(query, node_id=node_id, name=name, **additional_data)
         node = result.single()[0]
         data = {}
+        node = dict(node)
+        print(node)
         for key, value in node.items():
             data[key] = value
         return jsonify({"message": "Node created", "node_id": node_id, "data": node}), 201
