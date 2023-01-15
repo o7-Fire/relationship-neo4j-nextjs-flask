@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  API_HOST: "http://193.122.55.170:8000/"
+  API_HOST: "https://api.mindustry.me/"
 
 jobs:
   # Build job
