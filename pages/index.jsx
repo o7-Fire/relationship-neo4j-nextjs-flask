@@ -44,8 +44,8 @@ export default function Home({API_URL}) {
       .then((res) => res.json())
       .then((data) => {
         console.log(data)
-        setData(data.persons)
-        setLoading(false)
+          setData(data.data)
+          setLoading(false)
       })
       fetch(API_URL + `relationships`)
       .then((res) => res.json())
