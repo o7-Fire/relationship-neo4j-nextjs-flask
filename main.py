@@ -82,6 +82,7 @@ def read_node_by_node_id(node_id):
 
         node = result[0]
         data = {}
+        node = dict(node)
         for key, value in node.items():
             data[key] = value
         return jsonify({"message": "Node read", "data": data}), 200
@@ -112,6 +113,7 @@ def update_node(node_id):
         )
         node = result.single()[0]
         data = {}
+        node = dict(node)
         for key, value in node.items():
             data[key] = value
         return jsonify({"message": "Node updated", "data": data}), 200

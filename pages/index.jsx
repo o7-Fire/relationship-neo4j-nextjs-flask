@@ -43,17 +43,17 @@ export default function Home({API_URL}) {
       fetch(API_URL + `persons`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+          console.log(data)
           setData(data.data)
           setLoading(false)
       })
       fetch(API_URL + `relationships`)
-      .then((res) => res.json())
+          .then((res) => res.json())
           .then((data) => {
               console.log(data)
               setRelationships(data.relationships)
           });
-  }, [])
+  }, [API_URL])
 
 
     if (isLoading) return <p>Loading...</p>

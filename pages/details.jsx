@@ -59,10 +59,10 @@ export default function Create({API_URL}) {
                 .then((data) => {
 
                     //remove the current person from the list then assign it to query
-                    let currentPerson = data.persons.filter((person) => person.node_id == queryId)[0]
+                    let currentPerson = data.data.filter((person) => person.node_id === queryId)[0]
                     console.log(currentPerson)
                     //remove
-                    const persons = data.persons = data.persons.filter((person) => person.node_id != queryId)
+                    const persons = data.data = data.data.filter((person) => person.node_id !== queryId)
                     console.log(persons)
                     setPersons(persons)
                     setQuery(currentPerson)
