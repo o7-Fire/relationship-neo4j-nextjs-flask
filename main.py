@@ -40,12 +40,16 @@ def create_node():
         if node:
             return jsonify({"message": "Node already exists", "node_id": node_id}), 400
 
-        result = session.run(
-            "CREATE (a:Person {node_id: $node_id, name: $name, additional_data: $additional_data}) RETURN a",
-            node_id=node_id, name=name, additional_data=additional_data
-        )
+        query = "CREATE (a:Person {node_id: $node_id, name: $name, "
+        for key, value in additional_data.items():
+            query += key + ": $" + key + ", "
+        query = query[:-2] + "}) RETURN a"
+        result = session.run(query, node_id=node_id, name=name, **additional_data)
         node = result.single()[0]
-        return jsonify({"node_id": node["node_id"], "name": node["name"], "additional_data": node["additional_data"]})
+        data = {}
+        for key, value in node.items():
+            data[key] = value
+        return jsonify({"message": "Node created", "node_id": node_id, "data": node}), 201
 
 @app.route("/persons", methods=["GET"])
 def read_node():
@@ -53,7 +57,14 @@ def read_node():
         result = session.run(
             "MATCH (a:Person) RETURN a"
         )
-        return jsonify({"persons": [{"node_id": record[0]["node_id"], "name": record[0]["name"], "additional_data": record[0]["additional_data"]} for record in result]})
+        nodes = result.values()
+        data = []
+        for node in nodes:
+            node_data = {}
+            for key, value in node.items():
+                node_data[key] = value
+            data.append(node_data)
+        return jsonify({"message": "Nodes read", "data": data}), 200
 
 @app.route("/persons/<node_id>", methods=["GET"])
 def read_node_by_node_id(node_id):
@@ -67,8 +78,10 @@ def read_node_by_node_id(node_id):
             return jsonify({"message": "Node not found"}), 404
 
         node = result[0]
-      
-        return jsonify({"node_id": node["node_id"], "name": node["name"], "additional_data": node["additional_data"]})
+        data = {}
+        for key, value in node.items():
+            data[key] = value
+        return jsonify({"message": "Node read", "data": data}), 200
 
 
 @app.route("/persons/<node_id>", methods=["PUT"])
@@ -78,12 +91,27 @@ def update_node(node_id):
     additional_data = data["additional_data"]
 
     with driver.session() as session:
+        #check if node exists
         result = session.run(
-            "MATCH (a:Person) WHERE a.node_id = $node_id SET a.name = $name, a.additional_data = $additional_data RETURN a",
-            node_id=node_id, name=name, additional_data=additional_data
+            "MATCH (a:Person) WHERE a.node_id = $node_id RETURN a",
+            node_id=node_id
+        )
+        result = result.single()
+        if result is None:
+            return jsonify({"message": "Node not found"}), 404
+        query = "MATCH (a:Person {node_id: $node_id}) SET a.name = $name, "
+        for key, value in additional_data.items():
+            query += "a." + key + " = $" + key + ", "
+        query = query[:-2] + " RETURN a"
+        result = session.run(
+            query,
+            node_id=node_id, name=name, **additional_data
         )
         node = result.single()[0]
-        return jsonify({"node_id": node["node_id"], "name": node["name"], "additional_data": node["additional_data"]})
+        data = {}
+        for key, value in node.items():
+            data[key] = value
+        return jsonify({"message": "Node updated", "data": data}), 200
 
 @app.route("/persons/<node_id>", methods=["DELETE"])
 def delete_node(node_id):
