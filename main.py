@@ -63,6 +63,7 @@ def read_node():
         data = []
         for node in nodes:
             node_data = {}
+            node = dict(node[0])
             for key, value in node.items():
                 node_data[key] = value
             data.append(node_data)
